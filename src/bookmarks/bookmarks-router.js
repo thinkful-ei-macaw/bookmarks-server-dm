@@ -72,7 +72,31 @@ bookmarksRouter.get('/bookmarks/:bookmark_id', (req, res) => {
       return res.status(200).json(sanitizeBookmark(bookmark));
 
     });
+
+    
   
 });
+
+
+bookmarksRouter.delete ('/:bookmarkId', (req, res)=>{
+    const { bookmarkId } = req.params;
+    const db = req.app.get('db');
+
+  BookmarksService.getBookmarkByID(db, bookmarkId)
+    .then(bookmark => {
+      if (!bookmark) {
+        return res
+          .status(404)
+          .send('Bookmark Not Found');
+      }
+BookmarksService.deleteBookmark(db, bookmarkId)
+.then(()=> {
+  return res
+  .status(204).end()
+})
+    .catch(next) 
+    });
+  }
+);
 
 module.exports = bookmarksRouter;
